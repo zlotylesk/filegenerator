@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Report;
+use App\Service\FileGenerator\Generator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -19,8 +19,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class ReportGenerateExcelCommand extends Command
 {
-    public function __construct()
-    {
+    public function __construct(
+        readonly private Generator $filegenerator
+    ) {
         parent::__construct();
     }
 
@@ -29,21 +30,25 @@ class ReportGenerateExcelCommand extends Command
         $this
             ->addArgument('name', InputArgument::REQUIRED, 'Report name')
             ->addArgument('dateFrom', InputArgument::OPTIONAL, 'Start report date')
-            ->addArgument('dateTo', InputArgument::OPTIONAL, 'End report date')
-        ;
+            ->addArgument('dateTo', InputArgument::OPTIONAL, 'End report date');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $name = $input->getArgument('arg1');
+        $name = $input->getArgument('name');
         $dateFrom = $input->getArgument('dateFrom');
         $dateTo = $input->getArgument('dateTo');
 
         $report = new Report($name, $dateFrom, $dateTo);
+        $headers = [];
+        $data = [];
 
         try {
-            $io->success('File has been gen');
+            $this->filegenerator
+                ->setFileGenerator(new Generator\XlsGenerator())
+                ->generateFile($report, $headers, $data);
+            $io->success('File has been generated');
         } catch (\Exception $exception) {
             $io->error(sprintf('Unable to generate file. Reason: %s', $exception->getMessage()));
             return Command::FAILURE;

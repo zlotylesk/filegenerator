@@ -8,8 +8,8 @@ final class Report
 {
     public function __construct(
         readonly private string $name,
-        readonly private string $dateFrom,
-        readonly private string $dateTo
+        readonly private ?string $dateFrom,
+        readonly private ?string $dateTo
     ) {
     }
 
@@ -18,12 +18,12 @@ final class Report
         return $this->name;
     }
 
-    public function getDateFrom(): string
+    public function getDateFrom(): ?string
     {
         return $this->dateFrom;
     }
 
-    public function getDateTo(): string
+    public function getDateTo(): ?string
     {
         return $this->dateTo;
     }
