@@ -15,7 +15,7 @@ class Generator
         return $this;
     }
 
-    public function generateFile(Report $report, array $headers, array $data)
+    public function generateFile(Report $report, array $headers, array $data): void
     {
         $filename = $this->generateReportFilename($report);
 
@@ -24,6 +24,16 @@ class Generator
 
     public function generateReportFilename(Report $report): string
     {
-        return '';
+        $filename = $report->getName();
+        $dateStart = $report->getDateFrom();
+        $dateEnd = $report->getDateTo();
+
+        $format = $dateStart && $dateEnd
+            ? $dateStart === $dateEnd
+                ? '%s (%s)'
+                : '%s (%s - %s)'
+            : '%s';
+
+        return sprintf($format, $filename, $dateStart, $dateEnd);
     }
 }
