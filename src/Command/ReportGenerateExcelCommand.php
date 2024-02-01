@@ -41,8 +41,8 @@ class ReportGenerateExcelCommand extends Command
         $dateTo = $input->getArgument('dateTo');
 
         $report = new Report($name, $dateFrom, $dateTo);
-        $headers = [];
-        $data = [];
+        $headers = ['A1','B1','C1'];
+        $data = ['A2','B2','C2'];
 
         try {
             $this->filegenerator

@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\FileGenerator;
 
 use App\Entity\Report;
 
 class Generator
 {
+    public const DOCUMENT_DIR = 'var/docs';
+
     private FileGeneratorInterface $fileGenerator;
 
     public function setFileGenerator(FileGeneratorInterface $fileGenerator): self
